@@ -1,5 +1,7 @@
 # PlatformingGame
 
+![screenshot](Assets/Screenshots/ss_1.png)
+
 ## Q: What is this repo all about?
 
 **A:** This repository contains source code for my mini-project which is a platforming game made with SFML library. 
