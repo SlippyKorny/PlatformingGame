@@ -64,6 +64,8 @@
 #define PLAYER_STATE_FALL 1
 #define PLAYER_STATE_RISE 2
 
+#define PLAYER_INVINCIBILITY_TIME 2
+
 #define GRAVITY_FORCE 350.0f
 
 // You might wanna change that to force or even delete both of the next defines as I am not sure if it's gonna be useful

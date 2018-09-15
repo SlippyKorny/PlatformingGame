@@ -32,7 +32,7 @@ namespace ArktisProductions
         GameDataRef _data;
         
         sf::Clock _respawnerClock;
-        sf::Clock _scoreClock;
+        sf::Clock _scoreClock; 
         
         sf::Text _score;
         sf::Text _versionName;

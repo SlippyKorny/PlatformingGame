@@ -20,7 +20,13 @@ namespace ArktisProductions
         
         void Jump();
         
+        void Bounce();
+        
         void MoveOnePixelHigher();
+        
+        void MakePlayerInvincible();
+        
+        const bool IsPlayerInvincible() const;
         
         void SetPlayerState(unsigned int _state);
         
@@ -35,6 +41,12 @@ namespace ArktisProductions
         sf::Clock _clock;
         
         sf::Clock _mvmtClock;
+        
+        bool _invincibility;
+        
+        bool _wasItInvincInPrevFrame;
+        
+        unsigned int _invincibilityStartTime;
         
         unsigned int _animationIterator;
         

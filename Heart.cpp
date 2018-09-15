@@ -17,9 +17,13 @@ namespace ArktisProductions
             this->_data->window.draw(heartSprites.at(i));
     }
     
-    void Heart::GetDMG()
+    void Heart::ReceiveDMG()
     {
         heartSprites.pop_back();
     }
     
+    const unsigned short int Heart::GetHealth() const
+    {
+        return heartSprites.size();
+    }
 }

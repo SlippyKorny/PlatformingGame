@@ -13,6 +13,7 @@ namespace ArktisProductions
     {
         StateMachine machine;
         sf::RenderWindow window;
+        sf::Clock gameClock;
         AssetManager assets;
         InputManager input;
     };

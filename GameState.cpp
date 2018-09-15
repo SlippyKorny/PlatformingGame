@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "GameState.hpp"
 #include "DEFINITIONS.h"
+#include "GameOverState.hpp"
 
 // TODO: Delete
 #include <iostream>
@@ -30,11 +31,14 @@ namespace ArktisProductions
         this->_data->assets.LoadTexture("Goomba_0", GOOMBA_FRAME_0_FILEPATH);
         this->_data->assets.LoadTexture("Goomba_1", GOOMBA_FRAME_1_FILEPATH);
         this->_data->assets.LoadFont("score_font", FONT_PATH);
+        
         //Player Jump
         
         // Music
         this->_gameTheme.openFromFile(GAME_THEME_PATH);
         this->_gameTheme.setLoop(true);
+        
+        this->_gameTheme.setVolume(0);
         
         // Sounds
         _bumpBuffer.loadFromFile(BUMP_SOUND_PATH);
@@ -43,8 +47,6 @@ namespace ArktisProductions
         _jumpSound.setBuffer(_jumpBuffer);
         _stompBuffer.loadFromFile(STOMP_SOUND_PATH);
         _stompSound.setBuffer(_stompBuffer);
-        
-//        this->_gameTheme.setLoopPoints(sf::Music::Span<sf::Music>(0, 166));
         
         // Score
         this->_score.setFont(this->_data->assets.GetFont("score_font"));
@@ -72,6 +74,7 @@ namespace ArktisProductions
         _additionalPoints = 0;
         
         this->_gameTheme.play();
+        this->_data->gameClock.restart();
     }
     
     void GameState::HandleInput()
@@ -128,17 +131,28 @@ namespace ArktisProductions
             {
                 if(collision.CheckSpriteCollision(player->GetSprite(), goombaSprites.at(i)))
                 {
-                    if (player->GetPlayerState() != PLAYER_STATE_FALL)
+                    if (player->GetPlayerState() != PLAYER_STATE_FALL && !player->IsPlayerInvincible())
                     {
-                        heart->GetDMG();
-                        goomba->DeleteGoomba(i);
-                        _bumpSound.play();
+                        if(heart->GetHealth() != 0)
+                        {
+                            // TODO: Game state for game over
+                            heart->ReceiveDMG();
+                            goomba->DeleteGoomba(i);
+                            _bumpSound.play();
+                            player->MakePlayerInvincible();
+                        }
+                        else
+                            _gameStatus = GameStatus::eGameOver;
+                    }
+                    else if(player->IsPlayerInvincible())
+                    {
+                        
                     }
                     else if (player->GetPlayerState() == PLAYER_STATE_FALL)
                     {
                         goomba->DeleteGoomba(i);
                         _additionalPoints += 200;
-                        //                        player->Jump(); // Make a function called "Bounce"
+                        this->player->Bounce();
                         this->_stompSound.play();
                         return;
                     }
@@ -171,6 +185,12 @@ namespace ArktisProductions
             
             if(!isPlayerStandingOnSomething && player->GetPlayerState() != PLAYER_STATE_RISE)
                 player->SetPlayerState(PLAYER_STATE_FALL);
+        }
+        
+        if (_gameStatus == GameStatus::eGameOver)
+        {
+            this->_data->machine.AddState(StateRef(new GameOverState(_data)), false);
+            // ======================== IMPLEMENT IT HERE ===================================
         }
     }
     

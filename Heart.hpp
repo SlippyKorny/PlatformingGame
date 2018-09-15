@@ -9,7 +9,9 @@ namespace ArktisProductions
         
         void DrawHearts();
         
-        void GetDMG();
+        void ReceiveDMG();
+        
+        const  unsigned short int GetHealth() const;
         
     private:
         GameDataRef _data;

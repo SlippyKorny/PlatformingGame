@@ -10,8 +10,9 @@ namespace ArktisProductions
         _animationIterator = 0;
         _playerSprite.setTexture(this->_data->assets.GetTexture("Player Frame " + std::to_string(_animationIterator)));
         _playerSprite.setPosition(SCREEN_WIDTH/2.0f, SCREEN_HEIGHT - (_playerSprite.getGlobalBounds().height+this->_data->assets.GetTexture("Land").getSize().y));
-        _playerState = PLAYER_STATE_WALK;   // TODO: Maybe delete
-        
+        _playerState = PLAYER_STATE_WALK;
+        _invincibility = false;
+        _wasItInvincInPrevFrame = true;
     }
     
     void Player::Draw()
@@ -29,7 +30,7 @@ namespace ArktisProductions
             this->_clock.restart();
         }
         
-        else if(_clock.getElapsedTime().asSeconds() > PLAYER_ANIMATION_DURATION / how_many_frames) // Make jump anim.
+        else if(_clock.getElapsedTime().asSeconds() > PLAYER_ANIMATION_DURATION / how_many_frames)
         {
             if (_animationIterator < how_many_frames-1)
                 this->_animationIterator++;
@@ -38,12 +39,21 @@ namespace ArktisProductions
             this->_playerSprite.setTexture(this->_data->assets.GetTexture("Player Frame " + std::to_string(_animationIterator)));
             this->_clock.restart();
         }
+        
+        if (_invincibility && !_wasItInvincInPrevFrame)
+        {
+            this->_playerSprite.setColor(sf::Color(255, 255, 255, 0));
+            _wasItInvincInPrevFrame = true;
+        }
+        else if (_invincibility)
+        {
+            this->_playerSprite.setColor(sf::Color(255, 255, 255, 255));
+            _wasItInvincInPrevFrame = false;
+        }
     }
     
     void Player::Update(float dt)
     {
-        // TODO: Jump animation
-        // TODO: Change when hit a thing
         if(_playerState == PLAYER_STATE_FALL)
             this->_playerSprite.move(0, GRAVITY_FORCE * dt);
         else if(_playerState == PLAYER_STATE_RISE)
@@ -52,7 +62,13 @@ namespace ArktisProductions
         if(_mvmtClock.getElapsedTime().asSeconds() > JUMP_DURATION)
         {
             this->_playerState = PLAYER_STATE_FALL;
-            _mvmtClock.restart();                       // TODO: Maybe delete
+            _mvmtClock.restart();
+        }
+        
+        if (this->_data->gameClock.getElapsedTime().asSeconds() > _invincibilityStartTime + PLAYER_INVINCIBILITY_TIME)
+        {
+            _invincibility = false;
+            this->_playerSprite.setColor(sf::Color(255, 255, 255, 255));
         }
     }
     
@@ -65,9 +81,27 @@ namespace ArktisProductions
         }
     }
     
+    void Player::Bounce()
+    {
+        this->_playerState = PLAYER_STATE_WALK;
+        this->Jump();
+    }
+    
     void Player::MoveOnePixelHigher()
     {
         this->_playerSprite.move(0, -1);
+    }
+    
+    void Player::MakePlayerInvincible()
+    {
+        this->_invincibility = true;
+        this->_invincibilityStartTime = (unsigned int)this->_data->gameClock.getElapsedTime().asSeconds();
+    }
+    
+    const bool Player::IsPlayerInvincible() const
+    {
+        if (this->_invincibility) return true;
+        else return false;
     }
     
     void Player::SetPlayerState(unsigned int _state)
