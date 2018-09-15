@@ -8,7 +8,7 @@
 
 ## Q: How can I play it?
 
-**A:** You should be able to download it from the releases tab (The releases will be uploaded soon). You can play the game on
+**A:** You should be able to download it from the releases tab - <a href='https://github.com/TheSlipper/PlatformingGame/releases'>(link)</a>. You can play the game on
 Windows, MacOS and GNU/Linux.
 
 # DISCLAIMER
