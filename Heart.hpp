@@ -11,6 +11,8 @@ namespace ArktisProductions
         
         void ReceiveDMG();
         
+        void RestartHearts();
+        
         const  unsigned short int GetHealth() const;
         
     private:

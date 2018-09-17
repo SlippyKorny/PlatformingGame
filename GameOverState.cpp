@@ -50,7 +50,7 @@ namespace ArktisProductions
     
     void GameOverState::Draw(float dt)
     {
-//        this->_data->window.clear(sf::Color::Black);
+        this->_data->window.clear(sf::Color::Black);
         
         this->_data->window.draw(_restartText);
         this->_data->window.draw(_exitText);

@@ -6,8 +6,8 @@ namespace ArktisProductions
     {
         for (short unsigned int i=0; i < 3; i++ )
         {
-            heartSprites.push_back(sf::Sprite(this->_data->assets.GetTexture("heart")));
-            heartSprites.at(i).setPosition(i*heartSprites.at(i).getGlobalBounds().width + 10, 10);
+            this->heartSprites.push_back(sf::Sprite(this->_data->assets.GetTexture("heart")));
+            this->heartSprites.at(i).setPosition(i*heartSprites.at(i).getGlobalBounds().width + 10, 10);
         }
     }
     
@@ -19,11 +19,21 @@ namespace ArktisProductions
     
     void Heart::ReceiveDMG()
     {
-        heartSprites.pop_back();
+        this->heartSprites.pop_back();
+    }
+    
+    void Heart::RestartHearts()
+    {
+        // THIS IS ONLY TO BE CALLED WHEN THE PERSON DIES
+        for(int i=0; i < 3; i++)
+        {
+            this->heartSprites.push_back(sf::Sprite(this->_data->assets.GetTexture("heart")));
+            this->heartSprites.at(i).setPosition(i*heartSprites.at(i).getGlobalBounds().width + 10, 10);
+        }
     }
     
     const unsigned short int Heart::GetHealth() const
     {
-        return heartSprites.size();
+        return this->heartSprites.size();
     }
 }

@@ -32,34 +32,41 @@ namespace ArktisProductions
         
         sprite.setPosition(FIXED_PLATFORM_X_COORDINATE, SCREEN_HEIGHT-(216+128));  // 216
         
-        goombaSprites.push_back(sprite);
+        this->goombaSprites.push_back(sprite);
     }
     
     void Goomba::MoveGoombas(float dt)
     {
         for (unsigned short int i = 0; i < goombaSprites.size(); i++)
         {
-            if (goombaSprites.at(i).getPosition().x < 0 - goombaSprites.at(i).getGlobalBounds().width)
-                goombaSprites.erase(goombaSprites.begin()+i);
+            if (this->goombaSprites.at(i).getPosition().x < 0 - this->goombaSprites.at(i).getGlobalBounds().width)
+                this->goombaSprites.erase(goombaSprites.begin()+i);
             else
             {
                 //                sf::Vector2f position = platformSprites.at(i).getPosition();
                 float mvmt = GOOMBA_MVMT_SPEED * dt;
                 
-                goombaSprites.at(i).move(-mvmt, 0);
+                this->goombaSprites.at(i).move(-mvmt, 0);
             }
         }
     }
     
     void Goomba::DeleteGoomba(unsigned short int index)
     {
-        goombaSprites.erase(goombaSprites.begin() + index);
+        this->goombaSprites.erase(goombaSprites.begin() + index);
     }
     
     void Goomba::DrawGoombas()
     {
         for (unsigned short int i = 0; i < goombaSprites.size(); i++)
             this->_data->window.draw(goombaSprites.at(i));
+    }
+    
+    void Goomba::PurgeGoombas()
+    {
+        this->_animationIterator = 0;
+        this->goombaSprites.clear();
+        this->_clock.restart();
     }
     
     const std::vector<sf::Sprite> &Goomba::GetSprites() const

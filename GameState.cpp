@@ -41,12 +41,12 @@ namespace ArktisProductions
         this->_gameTheme.setVolume(0);
         
         // Sounds
-        _bumpBuffer.loadFromFile(BUMP_SOUND_PATH);
-        _bumpSound.setBuffer(_bumpBuffer);
-        _jumpBuffer.loadFromFile(JUMP_SOUND_PATH);
-        _jumpSound.setBuffer(_jumpBuffer);
-        _stompBuffer.loadFromFile(STOMP_SOUND_PATH);
-        _stompSound.setBuffer(_stompBuffer);
+        this->_bumpBuffer.loadFromFile(BUMP_SOUND_PATH);
+        this->_bumpSound.setBuffer(_bumpBuffer);
+        this->_jumpBuffer.loadFromFile(JUMP_SOUND_PATH);
+        this->_jumpSound.setBuffer(_jumpBuffer);
+        this->_stompBuffer.loadFromFile(STOMP_SOUND_PATH);
+        this->_stompSound.setBuffer(_stompBuffer);
         
         // Score
         this->_score.setFont(this->_data->assets.GetFont("score_font"));
@@ -68,10 +68,10 @@ namespace ArktisProductions
 
         // Platforms use the same texture as the floor does so no initialization
 //        platform->spawnInvisiblePlatform();
-        platform->spawnPlatform();
+        this->platform->spawnPlatform();
         
-        _gameStatus = GameStatus::ePlaying;
-        _additionalPoints = 0;
+        this->_gameStatus = GameStatus::ePlaying;
+        this->_additionalPoints = 0;
         
         this->_gameTheme.play();
         this->_data->gameClock.restart();
@@ -91,9 +91,9 @@ namespace ArktisProductions
                 this->_stompSound.stop();
                 this->_data->window.close();
             }
-            else if (sf::Event::KeyPressed == event.type && _gameStatus != GameStatus::eGameOver && player->GetPlayerState() == PLAYER_STATE_WALK)
+            else if (sf::Event::KeyPressed == event.type && this->_gameStatus != GameStatus::eGameOver && this->player->GetPlayerState() == PLAYER_STATE_WALK)
             {
-                player->Jump();
+                this->player->Jump();
                 this->_jumpSound.play();
             }
         }
@@ -101,39 +101,39 @@ namespace ArktisProductions
     
     void GameState::Update(float dt)
     {
-        if (_gameStatus != GameStatus::eGameOver)
+        if (this->_gameStatus != GameStatus::eGameOver)
         {
-            player->Animate(dt);
-            goomba->Animate(dt);
-            land->MoveLand(dt);
-            platform->movePlatforms(dt);
-            goomba->MoveGoombas(dt);
-            _score.setString("Points:" + std::to_string((int)_scoreClock.getElapsedTime().asSeconds() + _additionalPoints));
+            this->player->Animate(dt);
+            this->goomba->Animate(dt);
+            this->land->MoveLand(dt);
+            this->platform->movePlatforms(dt);
+            this->goomba->MoveGoombas(dt);
+            this->_score.setString("Points:" + std::to_string((int)_scoreClock.getElapsedTime().asSeconds() + _additionalPoints));
         }
         
-        if (_gameStatus == GameStatus::ePlaying)
+        if (this->_gameStatus == GameStatus::ePlaying)
         {
             bool isPlayerStandingOnSomething = false;
             
-            if(_respawnerClock.getElapsedTime().asSeconds() > PLATFORM_SPWN_FREQ)
+            if(this->_respawnerClock.getElapsedTime().asSeconds() > PLATFORM_SPWN_FREQ)
             {
                 platform->spawnPlatform();
                 // TODO: Maybe change this make it initialize at some other time
                 if(rand()%2 == 0)
                     this->goomba->SpawnAGoomba();
-                _respawnerClock.restart();
+                this->_respawnerClock.restart();
             }
             
-            player->Update(dt);
+            this->player->Update(dt);
             
             std::vector<sf::Sprite> goombaSprites = goomba->GetSprites();
             for(int i=0; i < goombaSprites.size(); i++)
             {
-                if(collision.CheckSpriteCollision(player->GetSprite(), goombaSprites.at(i)))
+                if(this->collision.CheckSpriteCollision(player->GetSprite(), goombaSprites.at(i)))
                 {
-                    if (player->GetPlayerState() != PLAYER_STATE_FALL && !player->IsPlayerInvincible())
+                    if (this->player->GetPlayerState() != PLAYER_STATE_FALL && !player->IsPlayerInvincible())
                     {
-                        if(heart->GetHealth() != 0)
+                        if(this->heart->GetHealth() != 0)
                         {
                             // TODO: Game state for game over
                             heart->ReceiveDMG();
@@ -166,7 +166,7 @@ namespace ArktisProductions
                 if(collision.CheckSpriteCollision(player->GetSprite(), landSprites.at(i)))
                 {
                     isPlayerStandingOnSomething = true;
-                    player->SetPlayerState(PLAYER_STATE_WALK);
+                    this->player->SetPlayerState(PLAYER_STATE_WALK);
                     return;
                 }
             }
@@ -175,22 +175,22 @@ namespace ArktisProductions
 
             for (int i=0; i < platformSprites.size(); i++)
             {
-                if(collision.IsSpriteOnPlatform(player->GetSprite(), platformSprites.at(i)))
+                if(this->collision.IsSpriteOnPlatform(player->GetSprite(), platformSprites.at(i)))
                 {
                     isPlayerStandingOnSomething = true;
-                    player->SetPlayerState(PLAYER_STATE_WALK);
+                    this->player->SetPlayerState(PLAYER_STATE_WALK);
                     return;
                 }
             }
             
-            if(!isPlayerStandingOnSomething && player->GetPlayerState() != PLAYER_STATE_RISE)
+            if(!isPlayerStandingOnSomething && this->player->GetPlayerState() != PLAYER_STATE_RISE)
                 player->SetPlayerState(PLAYER_STATE_FALL);
         }
         
-        if (_gameStatus == GameStatus::eGameOver)
+        if (this->_gameStatus == GameStatus::eGameOver)
         {
-            this->_data->machine.AddState(StateRef(new GameOverState(_data)), false);
-            // ======================== IMPLEMENT IT HERE ===================================
+            // ================================== CRASHES HERE =====================================
+            this->_data->machine.AddState(StateRef(new GameOverState(_data)), true);
         }
     }
     
@@ -207,5 +207,28 @@ namespace ArktisProductions
         this->_data->window.draw(_versionName);
         
         this->_data->window.display();
+    }
+    
+    void GameState::ResetState()
+    {
+        // Restart clocks
+        this->_respawnerClock.restart();
+        this->_scoreClock.restart();
+        
+        // Set additional points and the point text to zero
+        this->_additionalPoints = 0;
+        this->_score.setString("Score:0");
+        
+        // Restart song
+        // ======================================= CHECK IF IT WORKS =======================================
+        this->_gameTheme.stop();
+        this->_gameTheme.play();
+        
+        // Purge or reset objects
+        this->goomba->PurgeGoombas();
+        this->platform->PurgePlatforms();
+        this->heart->RestartHearts();
+        this->player->ResetPlayer();
+        
     }
 }

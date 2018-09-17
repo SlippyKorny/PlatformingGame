@@ -28,6 +28,8 @@ namespace ArktisProductions
         void Update(float dt);
         void Draw(float dt);
         
+        void ResetState();
+        
     private:
         GameDataRef _data;
         

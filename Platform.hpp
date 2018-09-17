@@ -17,6 +17,8 @@ namespace ArktisProductions
         
         void DrawPlatforms();
         
+        void PurgePlatforms();
+        
         const std::vector<sf::Sprite> &GetSprites() const;
         
     private:

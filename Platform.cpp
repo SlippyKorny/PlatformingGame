@@ -56,6 +56,11 @@ namespace ArktisProductions
             this->_data->window.draw(platformSprites.at(i));
     }
     
+    void Platform::PurgePlatforms()
+    {
+        this->platformSprites.clear();
+    }
+    
     const std::vector<sf::Sprite> &Platform::GetSprites() const
     {
         return this->platformSprites;

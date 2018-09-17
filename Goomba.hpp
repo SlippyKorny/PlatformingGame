@@ -18,6 +18,8 @@ namespace ArktisProductions
         
         void DrawGoombas();
         
+        void PurgeGoombas();
+        
         const std::vector<sf::Sprite> &GetSprites() const;
     private:
         GameDataRef _data;

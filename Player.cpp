@@ -104,6 +104,18 @@ namespace ArktisProductions
         else return false;
     }
     
+    void Player::ResetPlayer()
+    {
+        // =========================================== HERE ===========================================
+        this->_clock.restart();
+        this->_mvmtClock.restart();
+        this->_playerSprite.setPosition(SCREEN_WIDTH/2.0f, SCREEN_HEIGHT - (_playerSprite.getGlobalBounds().height+this->_data->assets.GetTexture("Land").getSize().y));
+        this->_playerState = PLAYER_STATE_WALK;
+        this->_invincibility = false;
+        this->_wasItInvincInPrevFrame = true;
+        this->_playerSprite.setTexture(this->_data->assets.GetTexture("Player Frame 0"));
+    }
+    
     void Player::SetPlayerState(unsigned int _state)
     {
         this->_playerState = _state;

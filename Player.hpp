@@ -28,6 +28,8 @@ namespace ArktisProductions
         
         const bool IsPlayerInvincible() const;
         
+        void ResetPlayer();
+        
         void SetPlayerState(unsigned int _state);
         
         const sf::Sprite &GetSprite() const;
