@@ -189,7 +189,7 @@ namespace ArktisProductions
         
         if (this->_gameStatus == GameStatus::eGameOver)
         {
-            // ================================== CRASHES HERE =====================================
+            this->_gameTheme.stop();
             this->_data->machine.AddState(StateRef(new GameOverState(_data)), true);
         }
     }

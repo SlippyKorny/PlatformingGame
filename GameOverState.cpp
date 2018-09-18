@@ -1,6 +1,7 @@
 #include <sstream>
 #include "GameOverState.hpp"
 #include "DEFINITIONS.h"
+#include "InputManager.hpp"
 
 #include <iostream>
 
@@ -8,12 +9,16 @@ namespace ArktisProductions
 {
     GameOverState::GameOverState(GameDataRef data) : _data(data)
     {
+    }
+    
+    void GameOverState::Init()
+    {
         // Game Over text
         _gameOverText.setFont(this->_data->assets.GetFont("score_font"));
         _gameOverText.setString("Game Over!");
         _gameOverText.setCharacterSize(72);
         _gameOverText.setPosition((SCREEN_WIDTH * 30.0f)/100.0f, (SCREEN_HEIGHT * 10.0f)/100.0f);
-//        _gameOverText.setPosition((SCREEN_HEIGHT * 10.0f)/100.0f, (SCREEN_WIDTH * 30.0f)/100.0f);
+        //        _gameOverText.setPosition((SCREEN_HEIGHT * 10.0f)/100.0f, (SCREEN_WIDTH * 30.0f)/100.0f);
         
         // Restart text
         _restartText.setFont(this->_data->assets.GetFont("score_font"));
@@ -28,11 +33,6 @@ namespace ArktisProductions
         _exitText.setPosition((SCREEN_WIDTH * 62.5f)/100.0f, (SCREEN_HEIGHT * 50.0f)/100.0f);
     }
     
-    void GameOverState::Init()
-    {
-        
-    }
-    
     void GameOverState::HandleInput()
     {
         sf::Event event;
@@ -41,6 +41,11 @@ namespace ArktisProductions
         {
             if (sf::Event::Closed == event.type)
                 this->_data->window.close();
+            else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+            {
+                if(this->_data->input.IsTextClicked(this->_exitText, sf::Mouse::Button::Left, this->_data->window))
+                    exit(0);
+            }
         }
     }
     
